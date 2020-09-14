@@ -1,29 +1,12 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
+#load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 config_setting(
-    name = "freebsd",
-    constraint_values = [
-        "@platforms//os:freebsd",
-    ],
-    visibility = [":__subpackages__"],
-)
-
-config_setting(
-    name = "openbsd",
-    constraint_values = [
-        "@platforms//os:openbsd",
-    ],
-    visibility = [":__subpackages__"],
-)
-
-config_setting(
     name = "windows",
-    constraint_values = [
-        "@platforms//os:windows",
-    ],
-    visibility = [":__subpackages__"],
+    constraint_values = ["@bazel_tools//platforms:windows"],
 )
 
 BSD_LINKOPTS = [
@@ -43,8 +26,6 @@ cc_library(
     hdrs = ["include/benchmark/benchmark.h"],
     linkopts = select({
         ":windows": ["-DEFAULTLIB:shlwapi.lib"],
-        ":freebsd": BSD_LINKOPTS,
-        ":openbsd": BSD_LINKOPTS,
         "//conditions:default": ["-pthread"],
     }),
     strip_include_prefix = "include",
